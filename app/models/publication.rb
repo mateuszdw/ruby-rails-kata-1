@@ -5,12 +5,13 @@ class Publication < ApplicationRecord
 
   def self.from_csv(path, pub_type)
     CSV.foreach(path, {col_sep: ';', headers: true, header_converters: :symbol}) do |row|
+      p row
       authors = Author.where(email: row[:authors].split(","))
       Publication.create!(
         title: row[:title],
         description: row[:description],
         isbn: row[:isbn],
-        published_at: row[:published_at],
+        published_at: row[:publishedat],
         authors: authors,
         publication_type: pub_type
       )

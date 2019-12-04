@@ -4,9 +4,10 @@ class PublicationsController < ApplicationController
   # GET /publications
   # GET /publications.json
   def index
-    query = Publication.includes(:authors)
+    query = Publication.includes(:authors).references(:authors)
     query = query.where('isbn LIKE ?', "%#{params[:isbn]}%") if params[:isbn].present?
-    @publications = query.order("title asc")
+    query = query.where('authors.email LIKE ?', "%#{params[:email]}%") if params[:email].present?
+    @publications = query.order("publication_type asc, title asc, authors.firstname asc")
   end
 
   # GET /publications/1
