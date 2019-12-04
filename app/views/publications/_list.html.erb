@@ -1,0 +1,33 @@
+<% unless smart_listing.empty? %>
+  <table class="table table-striped">
+    <thead>
+      <th><%= smart_listing.sortable "Type", "publication_type" %></th>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Isbn</th>
+      <th>Published at</th>
+      <th>Authors count</th>
+      <th>Authors</th>
+      <th colspan="3"></th>
+
+    </thead>
+    <tbody>
+      <% smart_listing.collection.each do |publication| %>
+        <tr>
+          <td><%= publication.publication_type %></td>
+          <td><%= truncate(publication.title) %></td>
+          <td><%= truncate(publication.description) %></td>
+          <td><%= publication.isbn %></td>
+          <td><%= publication.published_at %></td>
+          <td><%= publication.authors.size %></td>
+          <td><%= publication.authors.pluck(:firstname, :lastname, :email).join(", ") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <% # Render nice pagination links fitted for Bootstrap 3 by default %>
+  <%= smart_listing.paginate %>
+  <%= smart_listing.pagination_per_page_links %>
+<% else %>
+  <p class="warning">No records!</p>
+<% end %>

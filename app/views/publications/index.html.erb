@@ -1,43 +1,7 @@
-<p id="notice"><%= notice %></p>
 
-<h1>Publications</h1>
-
-<%= form_tag(publications_path, method: :get) do %>
-  Isbn <%= text_field_tag :isbn, params[:isbn] %>
-  Email <%= text_field_tag :email, params[:email] %>
-<%= submit_tag 'Search' %>
+<%= smart_listing_controls_for(publications_path, method: :get) do %>
+  Phrase <%= text_field_tag :phrase, params[:phrase] %>
+  <%= submit_tag 'Search' %>
 <% end %>
 
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Title</th>
-      <th>Description</th>
-      <th>Isbn</th>
-      <th>Published at</th>
-      <th>Authors</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @publications.each do |publication| %>
-      <tr>
-        <td><%= publication.publication_type %></td>
-        <td><%= truncate(publication.title) %></td>
-        <td><%= truncate(publication.description) %></td>
-        <td><%= publication.isbn %></td>
-        <td><%= publication.published_at %></td>
-        <td><%= publication.authors.pluck(:firstname, :lastname, :email).join(", ") %></td>
-        <td><%= link_to 'Show', publication %></td>
-        <td><%= link_to 'Edit', edit_publication_path(publication) %></td>
-        <td><%= link_to 'Destroy', publication, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Publication', new_publication_path %>
+<%= smart_listing_render :publications %>

@@ -1,13 +1,29 @@
 class PublicationsController < ApplicationController
   before_action :set_publication, only: [:show, :edit, :update, :destroy]
 
+  include SmartListing::Helper::ControllerExtensions
+  helper  SmartListing::Helper
+
   # GET /publications
   # GET /publications.json
   def index
-    query = Publication.includes(:authors).references(:authors)
-    query = query.where('isbn LIKE ?', "%#{params[:isbn]}%") if params[:isbn].present?
-    query = query.where('authors.email LIKE ?', "%#{params[:email]}%") if params[:email].present?
-    @publications = query.order("publication_type asc, title asc, authors.firstname asc")
+    query = Publication.joins(:authors).references(:authors)
+
+    if params[:phrase]
+      query = query.where(
+        'isbn LIKE ? OR title LIKE ? OR authors.email LIKE ?',
+        "%#{params[:phrase]}%", "%#{params[:phrase]}%", "%#{params[:phrase]}%"
+      )
+    end
+
+    smart_listing_create :publications,
+                           query,
+                           partial: "publications/list"
+
+    # query = Publication.includes(:authors).references(:authors)
+    # query = query.where('isbn LIKE ?', "%#{params[:isbn]}%") if params[:isbn].present?
+    # query = query.where('authors.email LIKE ?', "%#{params[:email]}%") if params[:email].present?
+    # @publications = query.order("publication_type asc, title asc, authors.firstname asc")
   end
 
   # GET /publications/1
